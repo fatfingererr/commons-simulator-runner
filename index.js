@@ -1,4 +1,5 @@
 const fs = require('fs');
+const { performance } = require('perf_hooks');
 const { Builder, By, Key, until } = require('selenium-webdriver');
 
 // Config parameters （you should not modify it)
@@ -97,7 +98,7 @@ const run = async (hatchers, proposals, commonTribute, maxSpending, customDays, 
             }
         }
         else if (hatchers < HATCHERS_DEFAULT) {
-            for (let i = 0; i < HATCHERS_DEFAULT - HATCHERS; i++) {
+            for (let i = 0; i < HATCHERS_DEFAULT - hatchers; i++) {
                 await driver.findElement(By.xpath('/html/body/div/main/div/div[3]/div[2]/input')).sendKeys(Key.LEFT);
             }
         }
@@ -124,7 +125,7 @@ const run = async (hatchers, proposals, commonTribute, maxSpending, customDays, 
             }
         }
         else if (proposals < PROPOSALS_DEFAULT) {
-            for (let i = 0; i < PROPOSALS_DEFAULT - PROPOSALS; i++) {
+            for (let i = 0; i < PROPOSALS_DEFAULT - proposals; i++) {
                 await driver.findElement(By.xpath()).sendKeys(Key.LEFT);
             }
         }
@@ -151,7 +152,7 @@ const run = async (hatchers, proposals, commonTribute, maxSpending, customDays, 
             }
         }
         else if (commonTribute < COMMON_TRIBUTE_DEFAULT) {
-            for (let i = 0; i < COMMON_TRIBUTE_DEFAULT - COMMON_TRIBUTE; i++) {
+            for (let i = 0; i < COMMON_TRIBUTE_DEFAULT - commonTribute; i++) {
                 await driver.findElement(By.xpath()).sendKeys(Key.LEFT);
             }
         }
@@ -178,7 +179,7 @@ const run = async (hatchers, proposals, commonTribute, maxSpending, customDays, 
             }
         }
         else if (maxSpending < MAX_SPENDING_DEFAULT) {
-            for (let i = 0; i < MAX_SPENDING_DEFAULT - MAX_SPENDING; i++) {
+            for (let i = 0; i < MAX_SPENDING_DEFAULT - maxSpending; i++) {
                 await driver.findElement(By.xpath(MAX_SPENDING_RANGE_BAR)).sendKeys(Key.LEFT);
             }
         }
@@ -224,7 +225,7 @@ const run = async (hatchers, proposals, commonTribute, maxSpending, customDays, 
             }
         }
         else if (exitTribute < EXIT_TRIBUTE_DEFAULT) {
-            for (let i = 0; i < EXIT_TRIBUTE_DEFAULT - EXIT_TRIBUTE; i++) {
+            for (let i = 0; i < EXIT_TRIBUTE_DEFAULT - exitTribute; i++) {
                 await driver.findElement(By.xpath(EXIT_TRIBUTE_RANGE_BAR)).sendKeys(Key.LEFT);
             }
         }
@@ -276,6 +277,7 @@ const run = async (hatchers, proposals, commonTribute, maxSpending, customDays, 
         fs.appendFile(SAVED_FILE_RESULTS, `${scoreResults},${proposalsResults},${inputsParams}\n`, async function (err) {
             if (err) throw err;
         });
+        return score;
     } finally {
         await driver.quit();
     }
@@ -337,27 +339,27 @@ function getAllCases() {
                                 customDays,
                                 exitTribute
                             ]);
-                            if (array.length > CASES_MAX) {
+                            if (array.length >= CASES_MAX) {
                                 break;
                             }
                         };
-                        if (array.length > CASES_MAX) {
+                        if (array.length >= CASES_MAX) {
                             break;
                         }
                     };
-                    if (array.length > CASES_MAX) {
+                    if (array.length >= CASES_MAX) {
                         break;
                     }
                 };
-                if (array.length > CASES_MAX) {
+                if (array.length >= CASES_MAX) {
                     break;
                 }
             };
-            if (array.length > CASES_MAX) {
+            if (array.length >= CASES_MAX) {
                 break;
             }
         };
-        if (array.length > CASES_MAX) {
+        if (array.length >= CASES_MAX) {
             break;
         }
     };
@@ -367,10 +369,13 @@ function getAllCases() {
 (async () => {
     const cases = getAllCases();
     for (let i = 0; i < cases.length; i++) {
-        console.log('iter: ', i + 1, '/', cases.length);
-        await run(cases[i][0], cases[i][1], cases[i][2], cases[i][3], cases[i][4], cases[i][5]);
+        const start = performance.now();
+        console.log('start: iter ', i + 1);
+        const score = await run(cases[i][0], cases[i][1], cases[i][2], cases[i][3], cases[i][4], cases[i][5]);
+        const elapsed = performance.now() - start;
+        const remain = elapsed * (cases.length - i - 1);
+        console.log('iter: ', i + 1, '/', cases.length, ' score: ', score,
+            ' [', Number(elapsed / 1000.0).toFixed(2), ' s] (remain: ',
+            Number(remain / (60 * 1000)).toFixed(2), ' mins)');
     }
 })();
-
-
-
