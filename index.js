@@ -19,7 +19,7 @@ const ALL_PROPOSALS = randomShuffleRange(1, 40);       // 1 ~ 40
 const ALL_COMMON_TRIBUTE = randomShuffleRange(55, 85); // 1 ~ 99 (%)
 const ALL_MAX_SPENDING = randomShuffleRange(35, 50);   // 5 ~ 50 (%)
 const ALL_CUTOM_DAYS = randomShuffleRange(70, 100);    // 3 ~ 120
-const ALL_EXIT_TRIBUTE = randomShuffleRange(1, 99);    // 1 ~ 99 (%)
+const ALL_EXIT_TRIBUTE = randomShuffleRange(1, 80);    // 1 ~ 80 (%)
 
 
 const run = async (hatchers, proposals, commonTribute, maxSpending, customDays, exitTribute) => {
@@ -310,7 +310,7 @@ Method 1. Rnuning the single paramter
 // const COMMON_TRIBUTE = 66; // 1 ~ 99 (%)
 // const MAX_SPENDING = 26;   // 5 ~ 50 (%)
 // const CUTOM_DAYS = 116;    // 3 ~ 120
-// const EXIT_TRIBUTE = 86;   // 1 ~ 99 (%)
+// const EXIT_TRIBUTE = 76;   // 1 ~ 80 (%)
 // (async () => {
 //     await run(HATCHERS, PROPOSALS, COMMON_TRIBUTE, MAX_SPENDING, CUTOM_DAYS, EXIT_TRIBUTE);
 // })();
